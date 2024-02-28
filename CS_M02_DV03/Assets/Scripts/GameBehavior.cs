@@ -15,6 +15,8 @@ public class GameBehavior : MonoBehaviour, IManager
     public bool speedLable = false;
 
     public Stack<string> lootStack = new Stack<string>();
+    public delegate void DebugDelegate(string newText);
+    public DebugDelegate debug = Print;
 
     private string speedText = "1.5 times Speed!";
     private string _state;
@@ -107,13 +109,22 @@ public class GameBehavior : MonoBehaviour, IManager
     void Start()
     {
         Initialized();
+        InventoryList<string> inventoryList = new InventoryList<string>();
+
+        inventoryList.SetItem("Potion");
+        Debug.Log(inventoryList.item);
     }
 
     public void Initialized()
     {
         _state = "Manager initialized..";
         _state.FancyDebug();
-        Debug.Log(_state);
+        debug(_state);
+        LogWithDelegate(debug);
+
+        GameObject player = GameObject.Find("Player");
+        PlayerBehavior playerBehavior = player.GetComponent<PlayerBehavior>();
+        playerBehavior.playerJump += HandlePlayerJump;
 
         lootStack.Push("Death");
         lootStack.Push("Sword of Doom");
@@ -122,6 +133,21 @@ public class GameBehavior : MonoBehaviour, IManager
         lootStack.Push("Winged Boot");
         lootStack.Push("Mythril Bracers");
 
+    }
+
+    public void HandlePlayerJump()
+    {
+        debug("Player has jumped...");
+    }
+
+    public static void Print(string newText)
+    {
+        Debug.Log(newText);
+    }
+
+    public void LogWithDelegate(DebugDelegate del)
+    {
+        del("Delegate the debug tsk...");
     }
 
     void OnGUI()
@@ -142,7 +168,20 @@ public class GameBehavior : MonoBehaviour, IManager
         {
             if (GUI.Button(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 50, 200, 100), "You lose..."))
             {
-                Utilities.RestartLevel();
+                try
+                {
+                    Utilities.RestartLevel(-1);
+                    debug("Level restarted successfullly...");
+                }
+                catch (System.ArgumentException e)
+                {
+                    Utilities.RestartLevel(0);
+                    debug("Reverting to scene 0: " + e.ToString());
+                }
+                finally
+                {
+                    debug("Restart handled...");
+                }
             }
         }
 

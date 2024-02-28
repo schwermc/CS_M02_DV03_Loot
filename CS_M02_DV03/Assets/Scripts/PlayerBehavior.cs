@@ -17,6 +17,9 @@ public class PlayerBehavior : MonoBehaviour
     //public GameObject follower;
     public float speedMuliplier;
 
+    public delegate void JumpingEvent();
+    public event JumpingEvent playerJump;
+
     private float vInput;
     private float hInput;
 
@@ -56,6 +59,7 @@ public class PlayerBehavior : MonoBehaviour
         {
             _rb.AddForce(Vector3.up * jumpVelocity, ForceMode.Impulse);
             doJump = false;
+            playerJump();
         }
 
         Vector3 rotation = Vector3.up * hInput;
