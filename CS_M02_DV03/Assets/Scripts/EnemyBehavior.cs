@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,6 +10,7 @@ public class EnemyBehavior : MonoBehaviour
     public Transform player;
     public Transform patrolRoute;
     public List<Transform> locations;
+    public GameBehavior gameManager;
 
     private int locationIndex = 0;
     private NavMeshAgent agent;
@@ -18,6 +20,7 @@ public class EnemyBehavior : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         player = GameObject.Find("Player").transform;
+        gameManager = GameObject.Find("GameManager").GetComponent<GameBehavior>();
         InitializePatrolRoute();
         MoveToNextPatrolLocation();
     }
@@ -48,6 +51,7 @@ public class EnemyBehavior : MonoBehaviour
             {
                 Destroy(this.gameObject);
                 Debug.Log("Enemy down.");
+                gameManager.PrintLootReport();
             }
         }
     }

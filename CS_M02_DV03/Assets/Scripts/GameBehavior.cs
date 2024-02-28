@@ -14,6 +14,8 @@ public class GameBehavior : MonoBehaviour, IManager
     public bool followerText = false;
     public bool speedLable = false;
 
+    public Stack<string> lootStack = new Stack<string>();
+
     private string speedText = "1.5 times Speed!";
     private string _state;
 
@@ -112,6 +114,14 @@ public class GameBehavior : MonoBehaviour, IManager
         _state = "Manager initialized..";
         _state.FancyDebug();
         Debug.Log(_state);
+
+        lootStack.Push("Death");
+        lootStack.Push("Sword of Doom");
+        lootStack.Push("HP+");
+        lootStack.Push("Golden Key");
+        lootStack.Push("Winged Boot");
+        lootStack.Push("Mythril Bracers");
+
     }
 
     void OnGUI()
@@ -145,5 +155,14 @@ public class GameBehavior : MonoBehaviour, IManager
         {
             GUI.Label(new Rect(Screen.width /2 - 100, 20, 150, 25), speedText);
         }
+    }
+
+    public void PrintLootReport()
+    {
+        var currentItem = lootStack.Pop();
+        var nextItem = lootStack.Peek();
+
+        Debug.LogFormat("You got {0}! You've got a good change of finding a {1} next!", currentItem, nextItem);
+        Debug.LogFormat("There are {0} random loot items waiting for you!", lootStack.Count);
     }
 }

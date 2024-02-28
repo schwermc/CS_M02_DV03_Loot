@@ -148,6 +148,7 @@ MonoBehaviour:
   player: {fileID: 0}
   patrolRoute: {fileID: 0}
   locations: []
+  gameManager: {fileID: 0}
 --- !u!195 &-7888494465577555581
 NavMeshAgent:
   m_ObjectHideFlags: 0
